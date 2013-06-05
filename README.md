@@ -16,5 +16,5 @@ The results would be saved in the config file for this plugin "/Online Counter/c
 Credits
 =======
 
-PocketMine devs ----> For creating pocketmine!!!
+PocketMine devs ----> For creating pocketmine!!!        
 Junyi00 ------> Created the plugins
