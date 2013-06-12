@@ -4,14 +4,14 @@
  __PocketMine Plugin__
 name=Online Counter
 description=Count the number of players who joins the server
-version=1.0
+version=1.1
 author=Junyi00
 class=OnlineCounter
-apiversion=7
+apiversion=8
 */
 
 class OnlineCounter implements Plugin {
-  private $api, $path, $counter, $countf;
+	private $api, $path, $counter, $countf;
 
 	public function __construct(ServerAPI $api, $server = false){
 		$this->api = $api;
@@ -56,7 +56,7 @@ class OnlineCounter implements Plugin {
 		
 	}
 
-    public function CCommand($cmd, $arg) {
+    public function CCommand($cmd, $arg, $issuer) {
     	
     	switch($cmd) {
     		
@@ -67,12 +67,19 @@ class OnlineCounter implements Plugin {
     				case "stop":
     			 	   if ($this->counter == true) {
             	    	    $this->counter = false;
-               	  	    	console("[Online Counter] Counting stopped");
+            	    	    if (($issuer instanceof Player)) {
+               	  	    		$issuer.sendChat("[Online Counter] Counting stopped");            	    	    }
+            	    	    else {
+            	    	    	$output .= "[Online Counter] Counting stopped";
+            	    	    }
                   	 		break;
     			    	}
     		 	   		else {
-    		    	
-    		  	  			console("[Online Counter] Counting is already stopped");
+    		    			if (($issuer instanceof Player)) {
+               	  	    		$issuer.sendChat("[Online Counter] Counting is already stopped");            	    }
+            	    	    else {
+    		  	  				$output .="[Online Counter] Counting is already stopped";
+            	    	    }
     		   	 			break;
     		    	
     		    		}
@@ -80,18 +87,31 @@ class OnlineCounter implements Plugin {
             		case "continue":   
               	 	    if ($this->counter == false) {
                 		    $this->counter = true;
-                  		    console("[Online Counter] Counting continued");
+                		    
+                		    if (($issuer instanceof Player)) {
+               	  	    		$issuer.sendChat("[Online Counter] Counting continued");            	    }
+            	    	    else {
+                  		    	$output .= "[Online Counter] Counting continued";
+            	    	    }
                  		    break;
     		 	   		}
     		    		else {
-    		    	
-    		    			console("[Online Counter] Counting is still on-going...");
+    		    			
+    		    			if (($issuer instanceof Player)) {
+               	  	    		$issuer.sendChat("[Online Counter] Counting is still on-going...");            	    }
+            	    	    else {
+    		    				$output .="[Online Counter] Counting is still on-going...";
+            	    	    }
     		    			break;
     		    	
     		    		}
                 
             		case "get":
-                		console("Number of players who joined today: $this->countf");
+            			if (($issuer instanceof Player)) {
+               	  	    		$issuer.sendChat("Number of players who joined today: $this->countf");            	}
+            	    	else {
+                		$output .= "Number of players who joined today: $this->countf";
+            	    	}
                 		break;
                 	
                 	case "reset":
@@ -107,15 +127,20 @@ class OnlineCounter implements Plugin {
 							"number of people who joined" => 0
 								));
 						$this->overwriteConfig($counts);
-						console("[Online Counter] Counter reset successfully!!");
-						break;
 
                 	default:	
-                		console("[Online Counter] Usage: /counter <get/stop/continue>");
+                		if (($issuer instanceof Player)) {
+               	  	    	$issuer.sendChat("[Online Counter] Usage: /counter <get/stop/continue>");            	
+               	  	    }
+            	    	else {
+                			$output .= "[Online Counter] Usage: /counter <get/stop/continue>";
+            	    	}
                 	
     			}                	
                     
     	}
+    	
+    	return $output;
     	
     } 
     
